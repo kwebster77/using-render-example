@@ -3,19 +3,36 @@ const { Pool } = require('pg');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 require('dotenv').config({path: './.env'});
+const { DataSource } =require("typeorm");
+
 
 const app = express();
 const port = process.env.PORT || 3001;
+const pgp = require('pg-promise')();
+
+// Use the DATABASE_URL environment variable provided by Render.com
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+// const pool = new DataSource({
+//     type: "postgres",
+//     host: process.env.HOSTNAME,
+//     port: 5432,
+//     username: process.env.USERNAME,
+//     password: process.env.PASSWORD,
+//     database: process.env.DATABASE_NAME,
+//     // entities: [__dirname + '/../**/*.entity.js'],
+//     synchronize: true,
+//   });
 
+// const pool = pgp(process.env.HOST);
 const pool = new Pool({
-  user:process.env.USER,
-  host:process.env.HOST,
-  database:process.env.DATABASE,
+  user:process.env.USERNAME,
+  host:process.env.HOSTNAME,
+  database:process.env.DATABASE_NAME,
   password:process.env.PASSWORD,
   port:process.env.DB_PORT,
+  ssl:true
 });
 
 pool.on('error', (err, client) => {
